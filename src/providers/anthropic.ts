@@ -1,19 +1,6 @@
 import type { UsageRecord } from "@/engine/types";
 
 /**
- * Fetches usage data from Anthropic's Usage API.
- * Stub — will be implemented with the Anthropic admin API.
- */
-export async function fetchAnthropicUsage(
-  _apiKey: string,
-  _startDate: string,
-  _endDate: string
-): Promise<UsageRecord[]> {
-  console.warn("[TokenLens] Anthropic Usage API integration not yet implemented. Use demo data.");
-  return [];
-}
-
-/**
  * Parse an Anthropic usage CSV export into UsageRecord[].
  */
 export function parseAnthropicCSV(csvText: string): UsageRecord[] {

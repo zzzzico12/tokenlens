@@ -1,10 +1,11 @@
-import { Eye, Database } from "lucide-react";
+import { Eye, Database, Upload } from "lucide-react";
 import { useStore } from "@/store";
 
 export function Header() {
   const isDemo = useStore((s) => s.isDemo);
   const { start, end } = useStore((s) => s.dateRange);
   const setDateRange = useStore((s) => s.setDateRange);
+  const setImportModalOpen = useStore((s) => s.setImportModalOpen);
 
   return (
     <header className="h-12 bg-surface-card border-b border-surface-border flex items-center justify-between px-4 shrink-0">
@@ -37,6 +38,13 @@ export function Header() {
             className="bg-surface border border-surface-border rounded-md px-2 py-1 text-xs text-white/70 outline-none focus:border-accent-purple/50"
           />
         </div>
+        <button
+          onClick={() => setImportModalOpen(true)}
+          className="flex items-center gap-1 text-white/40 hover:text-white/70 transition-colors"
+        >
+          <Upload size={13} />
+          <span className="text-xs">Import CSV</span>
+        </button>
         <a
           href="https://github.com/zzzzico12/tokenlens"
           target="_blank"

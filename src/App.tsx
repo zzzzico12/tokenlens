@@ -3,6 +3,7 @@ import { Header } from "@/components/Header";
 import { MetricCard } from "@/components/Dashboard";
 import { CostTrendChart, CostTreemap, CostHeatmap, ProviderDonut, ProjectBreakdown } from "@/components/Charts";
 import { BudgetIndicator } from "@/components/Budget";
+import { ImportModal } from "@/components/Providers/ImportModal";
 import { useStore } from "@/store";
 import { filterByDateRange, totalCost, totalTokens, aggregateByModel } from "@/engine";
 import { parseCSV } from "@/providers";
@@ -13,10 +14,13 @@ export default function App() {
   const loadDemo = useStore((s) => s.loadDemo);
   const addRecords = useStore((s) => s.addRecords);
   const { start, end } = useStore((s) => s.dateRange);
+  const importModalOpen = useStore((s) => s.importModalOpen);
+  const setImportModalOpen = useStore((s) => s.setImportModalOpen);
 
   useEffect(() => {
-    if (records.length === 0) loadDemo();
-  }, [records.length, loadDemo]);
+    loadDemo();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const filtered = useMemo(() => filterByDateRange(records, start, end), [records, start, end]);
   const cost = useMemo(() => totalCost(filtered), [filtered]);
@@ -45,16 +49,13 @@ export default function App() {
     [addRecords]
   );
 
-  const isEmpty = records.length === 0;
-
-  if (isEmpty) {
+  if (records.length === 0) {
     return (
       <div className="h-screen flex flex-col bg-surface">
         <Header />
+        {importModalOpen && <ImportModal onClose={() => setImportModalOpen(false)} />}
         <div className="flex-1 flex items-center justify-center">
-          <div className="text-center">
-            <p className="text-white/40 text-sm mb-4">Loading demo data...</p>
-          </div>
+          <p className="text-white/40 text-sm">Loading demo data…</p>
         </div>
       </div>
     );
@@ -67,6 +68,7 @@ export default function App() {
       onDragOver={(e) => e.preventDefault()}
     >
       <Header />
+      {importModalOpen && <ImportModal onClose={() => setImportModalOpen(false)} />}
       <main className="flex-1 overflow-y-auto p-4 space-y-4">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <MetricCard

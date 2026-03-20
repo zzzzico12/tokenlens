@@ -1,25 +1,6 @@
 import type { UsageRecord } from "@/engine/types";
 
 /**
- * Fetches usage data from OpenAI's Usage API.
- *
- * Requires an API key with organization read access.
- * Endpoint: GET https://api.openai.com/v1/organization/usage
- *
- * NOTE: This is a stub. The real implementation will use fetch() to call
- * the OpenAI Usage API directly from the browser (CORS permitting)
- * or via a minimal proxy endpoint.
- */
-export async function fetchOpenAIUsage(
-  _apiKey: string,
-  _startDate: string,
-  _endDate: string
-): Promise<UsageRecord[]> {
-  console.warn("[TokenLens] OpenAI Usage API integration not yet implemented. Use demo data.");
-  return [];
-}
-
-/**
  * Parse an OpenAI usage CSV export into UsageRecord[].
  * CSV columns: date, model, usage_type, n_context_tokens, n_generated_tokens, cost
  */
