@@ -10,15 +10,14 @@
 
 <p align="center">
   Beautiful, open-source dashboard for AI API spending.<br />
-  OpenAI · Anthropic · Google · AWS Bedrock · Azure — all in one view.
+  OpenAI · Anthropic · Google — all in one view.
 </p>
 
 <p align="center">
   <a href="#quick-start">Quick Start</a> •
-  <a href="#demo">Demo</a> •
   <a href="#why-tokenlens">Why?</a> •
   <a href="#features">Features</a> •
-  <a href="#data-sources">Data Sources</a> •
+  <a href="#import-your-data">Import Your Data</a> •
   <a href="#contributing">Contributing</a>
 </p>
 
@@ -38,34 +37,20 @@ You're shipping AI features. The API bills are climbing. But when someone asks "
 >
 > **You:** _opens OpenAI dashboard, then Anthropic console, then AWS Billing..._ "Give me an hour."
 
-**TokenLens gives you one beautiful dashboard for all your AI spending. No code changes. No proxy. Just connect and see.**
-
-## Demo
-
-<!-- Replace with actual screenshot/gif when ready -->
-
-```
-🎬 [Coming soon: animated dashboard showing real-time cost breakdown]
-```
-
-**Try it now:** [tokenlens.dev](https://tokenlens.dev) (demo mode with sample data)
+**TokenLens gives you one beautiful dashboard for all your AI spending. Export a CSV from your provider, drop it in, and see everything instantly.**
 
 ## Why TokenLens
-
-There are plenty of LLM monitoring tools. But they all require you to change your code first.
 
 | | TokenLens | Langfuse | LiteLLM | Helicone | Braintrust |
 |---|:---:|:---:|:---:|:---:|:---:|
 | **No code changes** | ✅ | ❌ (SDK) | ❌ (proxy) | ❌ (proxy) | ❌ (SDK) |
 | **No proxy needed** | ✅ | ✅ | ❌ | ❌ | ✅ |
 | **Beautiful cost dashboard** | ✅ | partial | basic | ✅ | ✅ |
-| **Treemap / Sankey / Heatmap** | ✅ | ❌ | ❌ | ❌ | ❌ |
+| **Treemap / Heatmap** | ✅ | ❌ | ❌ | ❌ | ❌ |
 | **Multi-provider unified** | ✅ | ✅ | ✅ | partial | partial |
 | **Self-hosted / offline** | ✅ | ✅ | ✅ | ❌ | ❌ |
 | **Open source** | ✅ | ✅ | ✅ | partial | ❌ |
 | **Setup time** | 2 min | 30 min+ | 30 min+ | 10 min | 30 min+ |
-
-**TokenLens reads your existing billing data.** No gateway to route traffic through. No SDK to wrap every call. Connect your provider API keys (read-only) and see your spending instantly.
 
 ## Quick Start
 
@@ -76,7 +61,7 @@ npm install
 npm run dev
 ```
 
-Open `http://localhost:5173`, paste your API key (read-only), and see your dashboard.
+Open `http://localhost:5173`, click **Import CSV**, and see your dashboard.
 
 ### Docker
 
@@ -84,16 +69,27 @@ Open `http://localhost:5173`, paste your API key (read-only), and see your dashb
 docker run -p 3000:3000 ghcr.io/zzzzico12/tokenlens:latest
 ```
 
-### Connect a provider
+## Import Your Data
 
-```bash
-# In the UI, click "Add Provider" and paste your key:
-# OpenAI:     sk-proj-...  (read-only: Usage API)
-# Anthropic:  sk-ant-...   (read-only: Usage API)
-# Or import a CSV export from any provider
-```
+TokenLens reads CSV exports from your provider's dashboard. No API keys required.
 
-**Your API keys are stored locally in your browser. Nothing is sent to any server.**
+### OpenAI
+
+1. Go to **platform.openai.com → Usage → Export**
+2. Download the CSV (`completions_usage_*.csv`)
+3. Drop it anywhere on the TokenLens dashboard
+
+### Anthropic
+
+1. Go to **console.anthropic.com → Usage → Export**
+2. Download the CSV (`claude_api_cost_*.csv`)
+3. Drop it anywhere on the TokenLens dashboard
+
+### Other providers
+
+Any CSV with `date`, `model`, and `cost` columns will be auto-detected and imported.
+
+> **All data stays in your browser.** Nothing is sent to any server.
 
 ## Features
 
@@ -101,13 +97,9 @@ docker run -p 3000:3000 ghcr.io/zzzzico12/tokenlens:latest
 
 See exactly where every dollar goes. Models are nested inside providers, sized by spend. GPT-4o taking 60% of your budget? You'll see it immediately.
 
-### 🌊 Token Flow (Sankey Diagram)
-
-Trace how tokens flow: Provider → Model → Project → Feature. Follow the money from source to sink and find where optimization has the biggest impact.
-
 ### 🔥 Daily Heatmap
 
-GitHub-contribution-style heatmap showing daily spend over the past year. Spot spending spikes instantly. Hover to see the exact amount and which model caused it.
+GitHub-contribution-style heatmap showing daily spend. Spot spending spikes instantly.
 
 ### 📈 Trend Charts
 
@@ -115,79 +107,29 @@ Daily, weekly, and monthly cost trends with provider/model breakdown. Compare pe
 
 ### ⚠️ Budget Alerts
 
-Set a monthly budget. TokenLens shows a burn-rate indicator and estimates when you'll hit the limit. Get a visual warning when you're on pace to exceed budget.
-
-### 🏷️ Project Tagging
-
-Tag API calls by project, team, or feature (when using the optional lightweight SDK). See cost breakdowns per project without changing your API routing.
-
-### 🔄 Real-Time Updates
-
-TokenLens polls provider Usage APIs at configurable intervals. The dashboard updates automatically — no manual refresh needed.
+Set a monthly budget. TokenLens shows a burn-rate indicator and estimates when you'll hit the limit.
 
 ### 🌙 Dark Mode
 
 Because you'll be staring at this dashboard at midnight when the alerts fire.
 
-## Data Sources
-
-TokenLens supports three ways to get your data:
-
-### 1. Provider Usage APIs (recommended)
-
-Connect directly to your provider's billing/usage API with a read-only API key.
-
-| Provider | API | What you get |
-|---|---|---|
-| **OpenAI** | Usage API (`/v1/organization/usage`) | Tokens, cost, model, daily breakdown |
-| **Anthropic** | Usage API (`/v1/organizations/usage`) | Tokens, cost, model, daily breakdown |
-| **Google AI** | Cloud Billing API | Cost per service/SKU |
-| **AWS Bedrock** | Cost Explorer API | On-demand & provisioned costs |
-| **Azure OpenAI** | Cost Management API | Resource-level cost data |
-
-### 2. CSV Import
-
-Export usage data from any provider's dashboard and drag-and-drop the CSV into TokenLens. Supports OpenAI, Anthropic, and custom CSV formats.
-
-### 3. Lightweight SDK (optional)
-
-For per-project tagging, add a tiny wrapper around your LLM calls:
-
-```typescript
-import { track } from '@tokenlens/sdk';
-
-// Wrap your existing call — no behavior change
-const response = await track(
-  () => openai.chat.completions.create({ model: 'gpt-4o', messages }),
-  { project: 'chatbot', feature: 'summarize' }
-);
-```
-
-This is optional. The dashboard works without it — you just won't have project-level breakdowns.
-
 ## Supported Providers
 
-| Provider | Usage API | CSV Import | SDK Tracking |
-|---|:---:|:---:|:---:|
-| OpenAI | ✅ | ✅ | ✅ |
-| Anthropic | ✅ | ✅ | ✅ |
-| Google Gemini | ✅ | ✅ | ✅ |
-| AWS Bedrock | ✅ | ✅ | ✅ |
-| Azure OpenAI | ✅ | ✅ | ✅ |
-| Ollama (local) | — | — | ✅ (tokens only) |
-| Any OpenAI-compatible | — | ✅ | ✅ |
+| Provider | CSV Import |
+|---|:---:|
+| OpenAI (`completions_usage_*.csv`) | ✅ |
+| Anthropic (`claude_api_cost_*.csv`) | ✅ |
+| Any CSV with date + model + cost | ✅ |
 
 ## Tech Stack
 
 | Layer | Choice | Why |
 |---|---|---|
 | Framework | React + TypeScript | Component-based, strong ecosystem |
-| Charts | Recharts + D3 | Treemap, Sankey, Heatmap, Line charts |
+| Charts | Recharts + D3 | Treemap, Heatmap, Line charts |
 | State | Zustand | Lightweight, no boilerplate |
 | Build | Vite | Fast HMR, optimized builds |
 | Styling | Tailwind CSS | Utility-first, dark mode built-in |
-| Storage | IndexedDB (Dexie) | Client-side, no backend needed |
-| API | Provider REST APIs | Direct browser fetch, no proxy |
 
 ## Architecture
 
@@ -195,26 +137,25 @@ This is optional. The dashboard works without it — you just won't have project
 ┌──────────────────────────────────────────────────┐
 │                  Your Browser                     │
 │                                                  │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐       │
-│  │ OpenAI   │  │Anthropic │  │  Google   │  ...  │
-│  │Usage API │  │Usage API │  │Billing   │       │
-│  └────┬─────┘  └────┬─────┘  └────┬─────┘       │
-│       │              │              │             │
-│       ▼              ▼              ▼             │
+│  ┌──────────────────────────────────────────┐    │
+│  │         CSV Import                        │    │
+│  │  Drag & drop or file picker               │    │
+│  │  OpenAI · Anthropic · Generic             │    │
+│  └────────────────────┬─────────────────────┘    │
+│                       │                          │
+│                       ▼                          │
 │  ┌──────────────────────────────────────────┐    │
 │  │         TokenLens Data Layer              │    │
-│  │  Normalize → Aggregate → Store (IndexedDB)│    │
+│  │  Parse → Normalize → Aggregate            │    │
 │  └────────────────────┬─────────────────────┘    │
 │                       │                          │
 │                       ▼                          │
 │  ┌──────────────────────────────────────────┐    │
 │  │         TokenLens Dashboard               │    │
-│  │  Treemap · Sankey · Heatmap · Trends      │    │
-│  │  Budget alerts · Project breakdown         │    │
+│  │  Treemap · Heatmap · Trends · Budget      │    │
 │  └──────────────────────────────────────────┘    │
 │                                                  │
-│  💾 All data stays in your browser (IndexedDB)   │
-│  🔒 API keys stored locally (never transmitted)  │
+│  💾 All data stays in your browser               │
 └──────────────────────────────────────────────────┘
 ```
 
@@ -226,24 +167,19 @@ This is optional. The dashboard works without it — you just won't have project
 tokenlens/
 ├── src/
 │   ├── components/
-│   │   ├── Dashboard/       # Main dashboard layout
-│   │   ├── Charts/          # Treemap, Sankey, Heatmap, Trends
-│   │   ├── Providers/       # Provider connection UI
-│   │   ├── Budget/          # Budget alerts & burn rate
-│   │   └── Settings/        # Configuration panel
+│   │   ├── Dashboard/       # Metric cards
+│   │   ├── Charts/          # Treemap, Heatmap, Trends
+│   │   ├── Providers/       # CSV import modal
+│   │   └── Budget/          # Budget alerts & burn rate
 │   ├── providers/
-│   │   ├── openai.ts        # OpenAI Usage API client
-│   │   ├── anthropic.ts     # Anthropic Usage API client
-│   │   ├── google.ts        # Google Cloud Billing client
-│   │   ├── bedrock.ts       # AWS Bedrock cost client
-│   │   └── csv.ts           # CSV import parser
+│   │   ├── openai.ts        # OpenAI CSV parser
+│   │   ├── anthropic.ts     # Anthropic CSV parser
+│   │   └── csv.ts           # Auto-detect & parse CSV
 │   ├── engine/
-│   │   ├── normalizer.ts    # Normalize provider data formats
-│   │   ├── aggregator.ts    # Aggregate by model/project/time
-│   │   └── budget.ts        # Budget tracking & alerts
+│   │   ├── aggregator.ts    # Aggregate by model/time
+│   │   └── types.ts         # Shared types
 │   ├── store/
-│   │   ├── db.ts            # IndexedDB via Dexie
-│   │   └── state.ts         # Zustand global state
+│   │   └── index.ts         # Zustand global state
 │   └── App.tsx
 ├── public/
 ├── package.json
@@ -252,25 +188,21 @@ tokenlens/
 
 ## Roadmap
 
-- [x] Multi-provider dashboard (OpenAI, Anthropic, Google)
+- [x] Multi-provider dashboard (OpenAI, Anthropic)
 - [x] Treemap cost visualization
 - [x] Daily heatmap
 - [x] Trend charts with period comparison
-- [x] CSV import
+- [x] CSV import (OpenAI & Anthropic formats)
 - [ ] Sankey diagram (token flow)
-- [ ] AWS Bedrock & Azure OpenAI integration
+- [ ] AWS Bedrock & Azure OpenAI CSV support
 - [ ] Budget alerts with email/Slack notification
-- [ ] Lightweight tracking SDK (`@tokenlens/sdk`)
 - [ ] Team sharing (export dashboard as shareable link)
 - [ ] CLI tool (`tokenlens report --month 2026-03`)
-- [ ] Cost optimization suggestions (AI-powered)
-- [ ] GitHub Actions integration (cost-per-PR)
 
 ## Privacy & Security
 
 - **100% client-side.** TokenLens has no backend. Your data never leaves your browser.
-- **API keys stored locally.** Keys are saved in your browser's localStorage. They are used to call provider APIs directly from your browser via CORS.
-- **Read-only access.** TokenLens only needs read access to usage/billing data. It never creates, modifies, or deletes any API resources.
+- **No API keys needed.** TokenLens reads CSV exports — no credentials required.
 - **No telemetry.** Zero analytics, zero tracking, zero data collection.
 - **Self-hostable.** Deploy on your own infrastructure or run locally.
 
@@ -283,19 +215,16 @@ git clone https://github.com/zzzzico12/tokenlens.git
 cd tokenlens
 npm install
 npm run dev    # Dev server on localhost:5173
-npm run test   # Run tests
 npm run build  # Production build
 ```
 
 ### Areas where help is wanted
 
-- 🎨 **Visualizations**: New chart types (bubble, radar, stacked area)
-- 🔌 **Providers**: AWS Bedrock, Azure OpenAI, Cohere, Mistral
+- 🎨 **Visualizations**: Sankey diagram, bubble chart, stacked area
+- 🔌 **Providers**: AWS Bedrock, Azure OpenAI, Google Cloud CSV formats
 - 🧪 **Testing**: Unit tests, E2E with Playwright
 - 📱 **Mobile**: Responsive layout for phone/tablet
 - 🌐 **i18n**: Japanese, Chinese, Korean, Spanish translations
-- 📊 **SDK**: Lightweight tracking SDK for per-project breakdown
-- 💡 **AI suggestions**: Cost optimization recommendations
 
 ## License
 
