@@ -1,4 +1,4 @@
-import { Eye, Database, Settings } from "lucide-react";
+import { Eye, Database } from "lucide-react";
 import { useStore } from "@/store";
 
 export function Header() {
